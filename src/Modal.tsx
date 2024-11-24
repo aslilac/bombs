@@ -41,7 +41,7 @@ export const Modal: React.FC<ModalProps> = ({
 				<div
 					onClick={stopPropagation}
 					className={classes`
-						${!noDefaultStyles && "w-104 p-8 bg-white shadow-2xl rounded-xl"}
+						${!noDefaultStyles && "w-sm max-w-dvw p-8 bg-white shadow-2xl rounded-xl"}
 						${className}
 					`}
 				>

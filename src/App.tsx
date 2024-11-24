@@ -51,8 +51,8 @@ const App: React.FC = () => {
 
 	return (
 		<>
-			<div className="min-h-dvh flex flex-col">
-				<div className="flex p-2 items-center justify-between border-b border-gray-300">
+			<div className="min-h-dvh flex flex-col-reverse">
+				<div className="flex p-2 items-center justify-between border-t border-gray-300">
 					<div className="flex items-center justify-between gap-2">
 						<Button onClick={onNewGame}>New game</Button>
 						<Button disabled={hasWon || hasLost} onClick={onHint}>
@@ -83,7 +83,7 @@ const App: React.FC = () => {
 						</div>
 					</div>
 
-					<div className="flex gap-2">
+					<div className="flex gap-2 max-w-dvw max-h-dvh overflow-scroll px-4">
 						{grid.map((column, x) => (
 							<div key={x} className="flex flex-col gap-2">
 								{column.map((tile, y) => (
