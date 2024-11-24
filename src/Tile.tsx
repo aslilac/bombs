@@ -1,4 +1,4 @@
-import { FlagTriangleRight } from "lucide";
+import { Bomb, FlagTriangleRight } from "lucide";
 import { useMemo } from "react";
 import classes from "./classes.ts";
 
@@ -37,26 +37,40 @@ export const Tile: React.FC<TileProps> = ({
 			return "text-black";
 		}
 
+		if (isMine) {
+			return "bg-red-200 border-red-700 text-red-700";
+		}
+
 		switch (surroundingMines) {
 			case 0:
 				return "border-gray-700";
 			case 1:
-				return "border-green-700 text-green-700";
-			case 2:
 				return "border-blue-700 text-blue-700";
+			case 2:
+				return "border-emerald-700 text-emerald-700";
+			case 3:
+				return "border-lime-600 text-lime-600";
+			case 4:
+				return "border-yellow-600 text-yellow-600";
+			case 5:
 			default:
-				return "border-red-700 text-red-700";
+				return "border-amber-600 text-amber-600";
 		}
-	}, [isMarked, isChecked, surroundingMines]);
+	}, [isMarked, isChecked, isMine, surroundingMines]);
 
 	return (
 		<button
 			type="button"
 			onClick={onClick}
 			onContextMenu={onMark}
-			className={classes`flex items-center justify-center w-8 h-8 p-0 ${isChecked && "checked"} ${isMine && "mine"} ${color}`}
+			className={classes`text-sm shadow-xs ${(!isMine || !isChecked) && "bg-button"} border rounded-md transition-colors select-none ${!isChecked && "border-gray-300 hover:border-gray-950 hover:background-gray-50"} flex items-center justify-center w-8 h-8 p-0 ${isChecked && "checked"} ${isMine && "mine"} ${color}`}
 		>
-			{isChecked && !isMine && surroundingMines !== 0 && surroundingMines}
+			{isChecked &&
+				(isMine ? (
+					<Bomb size={16} />
+				) : (
+					surroundingMines !== 0 && surroundingMines
+				))}
 			{isMarked && <FlagTriangleRight size={16} />}
 		</button>
 	);

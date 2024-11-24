@@ -31,7 +31,7 @@ export const Modal: React.FC<ModalProps> = ({ children, onBlur }) => {
 				onClick={onBlur}
 			>
 				<div
-					className="w-96 p-8 bg-white shadow-2xl rounded-xl"
+					className="w-104 p-8 bg-white shadow-2xl rounded-xl"
 					onClick={stopPropagation}
 				>
 					{children}

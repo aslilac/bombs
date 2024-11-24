@@ -1,3 +1,5 @@
+import * as Random from "./Random.ts";
+
 export type MinefieldOptions = {
 	readonly mines: number;
 	readonly width: number;
@@ -31,6 +33,7 @@ export class Minefield {
 	#startTime!: Date;
 	#completionTime?: Date;
 	#remainingTiles!: number;
+	#flagsPlaced!: number;
 	#detonated!: boolean;
 
 	#subscribers = new Set<() => void>();
@@ -69,8 +72,8 @@ export class Minefield {
 		}
 
 		for (let mines = 0; mines < options.mines; mines++) {
-			const x = Math.floor(Math.random() * options.width);
-			const y = Math.floor(Math.random() * options.height);
+			const x = Random.inRange(0, options.width);
+			const y = Random.inRange(0, options.height);
 
 			// Try again if this is already a mine
 			if (this.#grid[x][y].isMine) {
@@ -115,6 +118,74 @@ export class Minefield {
 		].filter(Boolean);
 	}
 
+	hint() {
+		if (this.#remainingTiles <= 0) {
+			return;
+		}
+
+		// We intentionally do not place mines in the corners. If the player hasn't
+		// already cleared all of the corners then we can start by clearing those.
+		const corners = [
+			{ x: 0, y: 0 },
+			{ x: this.#options.width - 1, y: 0 },
+			{ x: 0, y: this.#options.height - 1 },
+			{ x: this.#options.width - 1, y: this.#options.height - 1 },
+		];
+		for (const at of corners) {
+			if (!this.#grid[at.x][at.y].isChecked) {
+				this.checkTile(at);
+				return;
+			}
+		}
+
+		// Now that we definitely have some tiles cleared, we search for tiles near
+		// tiles that are already clear which are not mines, and we pick one
+		// randomly to reveal.
+		const possibilities = new Set<Point>();
+
+		for (const column of this.#grid) {
+			for (const tile of column) {
+				// If a tile is falsey marked, then that's a great hint to give. Unmark
+				// it and then return.
+				if (tile.isMarked && !tile.isMine) {
+					tile.isMarked = false;
+					this.#notify();
+					return;
+				}
+
+				if (!tile.isChecked) {
+					continue;
+				}
+
+				for (const neighbor of this.#getNeighbors(tile.position)) {
+					if (neighbor.isChecked || neighbor.isMarked || neighbor.isMine) {
+						continue;
+					}
+
+					possibilities.add(neighbor.position);
+				}
+			}
+		}
+
+		if (possibilities.size < 0) {
+			// If somehow, the player has cleared all the corners, not marked anything
+			// incorrectly, and is _entirely_ surrounded by mines, then just pick a
+			// random tile and clear it.
+			for (const column of this.#grid) {
+				for (const tile of column) {
+					if (tile.isChecked || tile.isMine) {
+						continue;
+					}
+
+					possibilities.add(tile.position);
+				}
+			}
+		}
+
+		const at = Random.fromArray([...possibilities]);
+		this.checkTile(at);
+	}
+
 	markTile(at: Point) {
 		const tile = this.#grid[at.x][at.y];
 		tile.isMarked = !tile.isMarked;
@@ -123,7 +194,7 @@ export class Minefield {
 	}
 
 	checkTile(at: Point) {
-		const tile = this.#grid.at(at.x)?.at(at.y);
+		const tile = this.#grid[at.x][at.y];
 		if (!tile || tile.isMarked) {
 			return;
 		}

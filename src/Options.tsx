@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button } from "./Button.tsx";
 import Difficulties from "./Difficulties.ts";
 import { type MinefieldOptions } from "./Minefield.ts";
 import { Modal } from "./Modal.tsx";
@@ -33,36 +34,39 @@ export const Options: React.FC<OptionsProps> = ({
 
 	return (
 		<Modal onBlur={onCancel}>
-			<div className="flex gap-2 items-center justify-between">
-				<button
-					className="basis-0 grow"
-					onClick={() => setOptions(Difficulties.EASY)}
-				>
-					Easy
-				</button>
-				<button
-					className="basis-0 grow"
-					onClick={() => setOptions(Difficulties.MEDIUM)}
-				>
-					Medium
-				</button>
-				<button
-					className="basis-0 grow"
-					onClick={() => setOptions(Difficulties.HARD)}
-				>
-					Hard
-				</button>
-				<button
-					className="basis-0 grow"
-					onClick={() => setOptions(Difficulties.EXPERT)}
-				>
-					Expert
-				</button>
+			<div className="flex flex-col gap-1">
+				<label>Presets</label>
+				<div className="flex gap-2 items-center justify-between">
+					<Button
+						className="basis-0 grow"
+						onClick={() => setOptions(Difficulties.EASY)}
+					>
+						Easy
+					</Button>
+					<Button
+						className="basis-0 grow"
+						onClick={() => setOptions(Difficulties.MEDIUM)}
+					>
+						Medium
+					</Button>
+					<Button
+						className="basis-0 grow"
+						onClick={() => setOptions(Difficulties.HARD)}
+					>
+						Hard
+					</Button>
+					<Button
+						className="basis-0 grow"
+						onClick={() => setOptions(Difficulties.EXPERT)}
+					>
+						Expert
+					</Button>
+				</div>
 			</div>
 			<br />
-			<form onSubmit={onSubmit}>
+			<form onSubmit={onSubmit} className="flex flex-col gap-4">
 				<OptionsField
-					label="Rows"
+					label="Columns"
 					type="number"
 					value={options.width}
 					min="9"
@@ -70,7 +74,7 @@ export const Options: React.FC<OptionsProps> = ({
 					onChange={setOption("width")}
 				/>
 				<OptionsField
-					label="Columns"
+					label="Rows"
 					type="number"
 					value={options.height}
 					min="9"
@@ -85,11 +89,15 @@ export const Options: React.FC<OptionsProps> = ({
 					max={(options.width * options.height) / 2}
 					onChange={setOption("mines")}
 				/>
-				<div className="flex gap-2 items-center justify-end">
-					<button type="button" onClick={onCancel}>
-						Cancel
-					</button>
-					<button>Save & restart</button>
+				<div className="flex pt-4 gap-2 items-center justify-end">
+					<Button onClick={onCancel}>Cancel</Button>
+					<Button
+						type="submit"
+						disabled={options === initialOptions}
+						className="enabled:bg-gray-900 enabled:text-white enabled:border-gray-900 hover:bg-gray-700"
+					>
+						Save & restart
+					</Button>
 				</div>
 			</form>
 		</Modal>
@@ -102,9 +110,12 @@ type OptionsFieldProps = JSX.IntrinsicElements["input"] & {
 
 const OptionsField: React.FC<OptionsFieldProps> = ({ label, ...attrs }) => {
 	return (
-		<>
+		<div className="flex flex-col gap-1">
 			<label>{label}</label>
-			<input {...attrs} />
-		</>
+			<input
+				className="inline-block border border-gray-300 p-2 rounded-sm w-full"
+				{...attrs}
+			/>
+		</div>
 	);
 };

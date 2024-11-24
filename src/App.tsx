@@ -1,4 +1,5 @@
 import { useRef, useState, useSyncExternalStore } from "react";
+import { Button } from "./Button.tsx";
 import Difficulties from "./Difficulties.ts";
 import { Minefield, type Point } from "./Minefield.ts";
 import { Options } from "./Options.tsx";
@@ -9,47 +10,51 @@ const App: React.FC = () => {
 	const [showOptions, setShowOptions] = useState(false);
 	const [dismissEndcard, setDismissEndcard] = useState(false);
 	const [options, setOptions] = useState(Difficulties.EASY);
-	const [time, restartTimer] = useTimer();
 
 	const minefieldRef = useRef<Minefield | undefined>();
 	if (!minefieldRef.current) {
 		minefieldRef.current = new Minefield(options);
-		restartTimer();
 	}
-	if (minefieldRef.current.options !== options) {
-		minefieldRef.current.initialize(options);
-		restartTimer();
-	}
-
 	const minefield = minefieldRef.current;
 	const { grid, remainingTiles, detonated } = useSyncExternalStore(
 		minefield.subscribe,
 		minefield.getSnapshot,
 	);
 
+	const [time, restartTimer] = useTimer({
+		paused: showOptions,
+		stopped: remainingTiles === 0 || detonated,
+	});
+
 	const onNewGame = () => {
 		minefield.initialize(options);
+		restartTimer();
 	};
 
-	const onCheckTile = (at: Point) => {
-		minefield.checkTile(at);
+	const onHint = () => {
+		minefield.hint();
 	};
 
 	const onMarkTile = (at: Point) => {
 		minefield.markTile(at);
 	};
 
+	const onCheckTile = (at: Point) => {
+		minefield.checkTile(at);
+	};
+
+	if (minefield.options !== options) {
+		onNewGame();
+	}
+
 	return (
 		<div className="min-h-dvh flex flex-col items-center justify-center gap-4">
 			<div className="flex items-center justify-between gap-4">
-				<button type="button" onClick={onNewGame}>
-					New game
-				</button>
-				<button type="button" onClick={() => setShowOptions(true)}>
-					Show options
-				</button>
-				{Math.floor(time / 1000)}
-				{remainingTiles}
+				<Button onClick={onNewGame}>New game</Button>
+				<Button onClick={onHint}>Hint</Button>
+				<Button onClick={() => setShowOptions(true)}>Show options</Button>
+				<p>Time: {Math.floor(time / 1000)}</p>
+				<p>Remaining tiles: {remainingTiles}</p>
 			</div>
 			{/* {grid.completed && showModal && (
 				<div id="floating">
@@ -96,7 +101,7 @@ const App: React.FC = () => {
 
 			{showOptions && (
 				<Options
-					initialOptions={{ mines: 10, width: 10, height: 10 }}
+					initialOptions={options}
 					onCancel={() => setShowOptions(false)}
 					updateOptions={(options) => {
 						setOptions(options);
