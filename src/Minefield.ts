@@ -48,6 +48,10 @@ export class Minefield {
 		return this.#remainingTiles <= 0 || this.#detonated;
 	}
 
+	get hasWon() {
+		return this.#remainingTiles <= 0;
+	}
+
 	constructor(options: MinefieldOptions) {
 		this.initialize(options);
 	}
@@ -302,8 +306,8 @@ export class Minefield {
 				]),
 				startTime: new Date(this.#startTime),
 				completionTime: this.#completionTime && new Date(this.#completionTime),
-				remainingTiles: this.isGameOver ? 0 : this.#remainingTiles,
-				remainingFlagsToPlace: this.isGameOver
+				remainingTiles: this.hasWon ? 0 : this.#remainingTiles,
+				remainingFlagsToPlace: this.hasWon
 					? 0
 					: this.options.mines - this.#flagsPlaced,
 				detonated: this.#detonated,

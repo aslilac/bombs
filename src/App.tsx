@@ -63,19 +63,19 @@ const App: React.FC = () => {
 				</div>
 				<div className="flex flex-col flex-grow items-center justify-center gap-4">
 					<div className="flex items-center justify-between gap-4">
-						<div className="basis-0 grow-1 flex flex-col-reverse items-center">
+						<div className="flex flex-col-reverse items-center">
 							<div className="uppercase tracking-wide text-xs text-gray-500">
 								Elapsed time
 							</div>
 							<time>{Math.floor(time / 1000)}</time>
 						</div>
-						<div className="basis-0 grow-1 flex flex-col-reverse items-center">
+						<div className="flex flex-col-reverse items-center">
 							<div className="uppercase tracking-wide text-xs text-gray-500">
 								Remaining tiles
 							</div>
 							<data>{remainingTiles}</data>
 						</div>
-						<div className="basis-0 grow-1 flex flex-col-reverse items-center">
+						<div className="flex flex-col-reverse items-center">
 							<div className="uppercase tracking-wide text-xs text-gray-500">
 								Flags to place
 							</div>
