@@ -12,6 +12,12 @@
 	--shadow-xs: 0 1px 2px #0001;
 }
 
+@utility scrollbar-hidden {
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+
 @layer base {
 	@font-face {
 		font-family: "Outfit";

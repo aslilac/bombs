@@ -51,7 +51,7 @@ const App: React.FC = () => {
 
 	return (
 		<>
-			<div className="min-h-dvh flex flex-col-reverse">
+			<div className="h-dvh w-dvw flex flex-col-reverse">
 				<div className="flex p-2 items-center justify-between border-t border-gray-300">
 					<div className="flex items-center justify-between gap-2">
 						<Button onClick={onNewGame}>New game</Button>
@@ -61,7 +61,8 @@ const App: React.FC = () => {
 					</div>
 					<Button onClick={() => setShowOptions(true)}>Show options</Button>
 				</div>
-				<div className="flex flex-col flex-grow items-center justify-center gap-4">
+
+				<div className="flex flex-col flex-grow items-center justify-center overflow-y-auto gap-4 py-1">
 					<div className="flex items-center justify-between gap-4">
 						<div className="flex flex-col-reverse items-center">
 							<div className="uppercase tracking-wide text-xs text-gray-500">
@@ -83,7 +84,7 @@ const App: React.FC = () => {
 						</div>
 					</div>
 
-					<div className="flex gap-2 max-w-dvw max-h-dvh overflow-scroll px-4">
+					<div className="flex gap-2 max-w-full max-h-full overflow-x-auto scrollbar-hidden px-4 py-2">
 						{grid.map((column, x) => (
 							<div key={x} className="flex flex-col gap-2">
 								{column.map((tile, y) => (
