@@ -24,6 +24,7 @@ type Snapshot = {
 	readonly startTime: Date;
 	readonly completionTime?: Date;
 	readonly remainingTiles: number;
+	readonly remainingFlagsToPlace: number;
 	readonly detonated: boolean;
 };
 
@@ -43,6 +44,10 @@ export class Minefield {
 		return this.#options;
 	}
 
+	get isGameOver() {
+		return this.#remainingTiles <= 0 || this.#detonated;
+	}
+
 	constructor(options: MinefieldOptions) {
 		this.initialize(options);
 	}
@@ -53,6 +58,7 @@ export class Minefield {
 		this.#startTime = new Date();
 		this.#completionTime = undefined;
 		this.#remainingTiles = options.width * options.height - options.mines;
+		this.#flagsPlaced = 0;
 		this.#detonated = false;
 
 		for (let x = 0; x < options.width; x++) {
@@ -119,7 +125,7 @@ export class Minefield {
 	}
 
 	hint() {
-		if (this.#remainingTiles <= 0) {
+		if (this.isGameOver) {
 			return;
 		}
 
@@ -187,20 +193,22 @@ export class Minefield {
 	}
 
 	markTile(at: Point) {
+		if (this.isGameOver) {
+			return;
+		}
+
 		const tile = this.#grid[at.x][at.y];
+
 		tile.isMarked = !tile.isMarked;
+
+		this.#flagsPlaced += tile.isMarked ? 1 : -1;
 
 		this.#notify();
 	}
 
 	checkTile(at: Point) {
 		const tile = this.#grid[at.x][at.y];
-		if (
-			!tile ||
-			tile.isMarked ||
-			this.#remainingTiles === 0 ||
-			this.#detonated
-		) {
+		if (!tile || tile.isMarked || this.isGameOver) {
 			return;
 		}
 
@@ -209,11 +217,35 @@ export class Minefield {
 			// around it that hasn't been marked as a bomb by the player.
 			if (tile.isChecked) {
 				const neighbors = this.#getNeighbors(at);
-				for (const neighbor of neighbors) {
-					if (!neighbor.isChecked) {
-						this.checkTile(neighbor.position);
+
+				// If the number of marked neighbors is equal to the number that are
+				// mines, then check all the remaining neighbors.
+				if (
+					neighbors.reduce((i, it) => i + Number(it.isMarked), 0) ===
+					tile.surroundingMines
+				) {
+					for (const neighbor of neighbors) {
+						if (!neighbor.isChecked) {
+							this.checkTile(neighbor.position);
+						}
 					}
 				}
+
+				// If all remaining unchecked neighbors must be mines, then mark all of
+				// them as mines.
+				if (
+					neighbors.reduce(
+						(i, it) => i + Number(it.isMarked || !it.isChecked),
+						0,
+					) === tile.surroundingMines
+				) {
+					for (const neighbor of neighbors) {
+						if (!neighbor.isMarked && !neighbor.isChecked) {
+							this.markTile(neighbor.position);
+						}
+					}
+				}
+
 				return;
 			}
 
@@ -270,7 +302,10 @@ export class Minefield {
 				]),
 				startTime: new Date(this.#startTime),
 				completionTime: this.#completionTime && new Date(this.#completionTime),
-				remainingTiles: this.#remainingTiles,
+				remainingTiles: this.isGameOver ? 0 : this.#remainingTiles,
+				remainingFlagsToPlace: this.isGameOver
+					? 0
+					: this.options.mines - this.#flagsPlaced,
 				detonated: this.#detonated,
 			};
 		}

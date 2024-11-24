@@ -16,12 +16,10 @@ const App: React.FC = () => {
 		minefieldRef.current = new Minefield(options);
 	}
 	const minefield = minefieldRef.current;
-	const { grid, remainingTiles, detonated } = useSyncExternalStore(
-		minefield.subscribe,
-		minefield.getSnapshot,
-	);
+	const { grid, remainingTiles, remainingFlagsToPlace, detonated } =
+		useSyncExternalStore(minefield.subscribe, minefield.getSnapshot);
 
-	const hasWon = remainingTiles === 0;
+	const hasWon = remainingTiles <= 0;
 	const hasLost = detonated;
 
 	const [time, restartTimer] = useTimer({
@@ -52,69 +50,76 @@ const App: React.FC = () => {
 	}
 
 	return (
-		<div className="min-h-dvh flex flex-col items-center justify-center gap-4">
-			<div className="flex items-center justify-between gap-4">
-				<Button onClick={onNewGame}>New game</Button>
-				<Button onClick={onHint}>Hint</Button>
-				<Button onClick={() => setShowOptions(true)}>Show options</Button>
-				<p>Time: {Math.floor(time / 1000)}</p>
-				<p>Remaining tiles: {remainingTiles}</p>
-			</div>
-			{/* {grid.completed && showModal && (
-				<div id="floating">
-					<div id="modal">
-						<h1 id="modal-title">
-							{grid.victory
-								? `You took ${((grid.completed - grid.start!) / 1000).toFixed(
-										1,
-									)} seconds c:`
-								: `You blew up a mine :c`}
-						</h1>
-						<button id="modal-okay" onClick={startNewGame}>
-							{grid.victory ? "Yay c:" : "Aww :c"}
-						</button>
-						<button id="modal-close" onClick={() => setShowModal(false)}>
-							See it
-						</button>
+		<>
+			<div className="min-h-dvh flex flex-col">
+				<div className="flex p-2 items-center justify-between border-b border-gray-300">
+					<div className="flex items-center justify-between gap-2">
+						<Button onClick={onNewGame}>New game</Button>
+						<Button disabled={hasWon || hasLost} onClick={onHint}>
+							Hint
+						</Button>
 					</div>
+					<Button onClick={() => setShowOptions(true)}>Show options</Button>
 				</div>
-			)} */}
+				<div className="flex flex-col flex-grow items-center justify-center gap-4">
+					<div className="flex items-center justify-between gap-4">
+						<div className="basis-0 grow-1 flex flex-col-reverse items-center">
+							<div className="uppercase tracking-wide text-xs text-gray-500">
+								Elapsed time
+							</div>
+							<time>{Math.floor(time / 1000)}</time>
+						</div>
+						<div className="basis-0 grow-1 flex flex-col-reverse items-center">
+							<div className="uppercase tracking-wide text-xs text-gray-500">
+								Remaining tiles
+							</div>
+							<data>{remainingTiles}</data>
+						</div>
+						<div className="basis-0 grow-1 flex flex-col-reverse items-center">
+							<div className="uppercase tracking-wide text-xs text-gray-500">
+								Flags to place
+							</div>
+							<data>{remainingFlagsToPlace}</data>
+						</div>
+					</div>
 
-			<div className="minefield flex gap-2">
-				{grid.map((column, x) => (
-					<div key={x} className="flex flex-col gap-2">
-						{column.map((tile, y) => (
-							<Tile
-								key={y}
-								onMark={(event) => {
-									event.preventDefault();
-									onMarkTile(tile.position);
-								}}
-								onCheck={() => {
-									onCheckTile(tile.position);
-								}}
-								isGameOver={hasWon || hasLost}
-								isMine={tile.isMine}
-								isChecked={tile.isChecked}
-								isMarked={tile.isMarked}
-								surroundingMines={tile.surroundingMines}
-							/>
+					<div className="flex gap-2">
+						{grid.map((column, x) => (
+							<div key={x} className="flex flex-col gap-2">
+								{column.map((tile, y) => (
+									<Tile
+										key={y}
+										onMark={(event) => {
+											event.preventDefault();
+											onMarkTile(tile.position);
+										}}
+										onCheck={() => {
+											onCheckTile(tile.position);
+										}}
+										isGameOver={hasWon || hasLost}
+										isMine={tile.isMine}
+										isChecked={tile.isChecked}
+										isMarked={tile.isMarked}
+										surroundingMines={tile.surroundingMines}
+									/>
+								))}
+							</div>
 						))}
 					</div>
-				))}
+
+					{hasWon && !dismissEndcard && (
+						<div className="w-72 py-2 text-center text-lg border rounded-lg border-emerald-500 bg-emerald-50 text-emerald-900">
+							You won! c:
+						</div>
+					)}
+
+					{hasLost && !dismissEndcard && (
+						<div className="w-72 py-2 text-center text-lg border rounded-lg border-pink-500 bg-pink-50 text-pink-900">
+							You blew up a mine :c
+						</div>
+					)}
+				</div>
 			</div>
-
-			{hasWon && !dismissEndcard && (
-				<div className="w-72 py-2 text-center text-lg border rounded-lg border-emerald-500 bg-emerald-50 text-emerald-900">
-					You won!
-				</div>
-			)}
-
-			{hasLost && !dismissEndcard && (
-				<div className="w-72 py-2 text-center text-lg border rounded-lg border-pink-500 bg-pink-50 text-pink-900">
-					You suck!
-				</div>
-			)}
 
 			{showOptions && (
 				<Options
@@ -126,7 +131,7 @@ const App: React.FC = () => {
 					}}
 				/>
 			)}
-		</div>
+		</>
 	);
 };
 
