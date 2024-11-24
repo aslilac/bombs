@@ -1,14 +1,14 @@
-/*
-  Much to my begrudging, colors is intentionally an scss file rather than a
-  sass file like the rest of the source, due to a limitation in the implementation
-  of the indented syntax when using @include.
-
-  https://github.com/sass/sass/issues/216
-
-  I would love to try and fix the issue myself, but I don't know anything about
-  Dart, the language that Sass is currently implemented in. If it ever gets done
-  by someone else, it will become a sass file just like everyone else.
-*/
+/**
+ * Much to my begrudging, colors is intentionally an scss file rather than a
+ * sass file like the rest of the source, due to a limitation in the implementation
+ * of the indented syntax when using @include.
+ *
+ * https://github.com/sass/sass/issues/216
+ *
+ * I would love to try and fix the issue myself, but I don't know anything about
+ * Dart, the language that Sass is currently implemented in. If it ever gets done
+ * by someone else, it will become a sass file just like everyone else.
+ */
 
 @mixin colors($args...) {
 	:root {
@@ -62,9 +62,5 @@
 	$light-blue: #6380f4,
 	$dark-violet: #2d12af,
 	$violet: #614ceb,
-	$light-violet: #9084e6,
-	$atom: #90a3e8,
-	$copper: #f0dac7,
-	$peach: #ff9361,
-	$night: #12142d
+	$light-violet: #9084e6
 );

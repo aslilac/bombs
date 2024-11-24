@@ -1,11 +1,34 @@
 {
 	"compilerOptions": {
+		"allowArbitraryExtensions": true,
+		"allowImportingTsExtensions": true,
+		"declaration": false,
 		"esModuleInterop": true,
-		"module": "esnext",
-		"moduleResolution": "node",
+		"exactOptionalPropertyTypes": false,
+		"forceConsistentCasingInFileNames": true,
+		"jsx": "react-jsx",
+		"incremental": true,
+		"isolatedModules": true,
+		"module": "preserve",
+		"moduleResolution": "bundler",
+		"noEmit": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitAny": true,
+		"noImplicitOverride": false,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noUncheckedIndexedAccess": false,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"preserveWatchOutput": true,
+		"sourceMap": true,
+		"strict": true,
 		"target": "esnext",
-		"jsx": "preserve",
-		"strict": true
+		"types": ["react", "react-dom", "vite/client"],
+		"useDefineForClassFields": true,
+		"useUnknownInCatchVariables": true,
+		"verbatimModuleSyntax": true
 	},
-	"include": ["src/**/*"]
+	"include": ["./src/**/*"]
 }

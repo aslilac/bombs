@@ -1,3 +1,3 @@
-# bombas
+# Bombs
 
-A minesweeper-like I originally made way back in high school
+A minesweeper I originally made way back in high school.

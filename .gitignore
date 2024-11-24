@@ -1,13 +1,9 @@
 .DS_Store
 .env*
 .idea/
-.now/
+.nova/
 .vscode/
 build/
-dist/
 node_modules/
-.parcel-cache/
-target/
 *.log
-*.pyc
 *.tsbuildinfo
