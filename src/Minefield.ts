@@ -195,7 +195,12 @@ export class Minefield {
 
 	checkTile(at: Point) {
 		const tile = this.#grid[at.x][at.y];
-		if (!tile || tile.isMarked) {
+		if (
+			!tile ||
+			tile.isMarked ||
+			this.#remainingTiles === 0 ||
+			this.#detonated
+		) {
 			return;
 		}
 

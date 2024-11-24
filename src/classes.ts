@@ -3,7 +3,7 @@ export default function classes(
 	...variables: Array<string | false | null | undefined | 0 | 0n>
 ) {
 	const segments = [...templateSegments];
-	let className = segments.shift();
+	let className = segments.shift() ?? "";
 
 	if (segments.length !== variables.length) {
 		throw new ReferenceError("somehow these are wrong");
@@ -16,5 +16,5 @@ export default function classes(
 		className += segments[i];
 	}
 
-	return className;
+	return className.replaceAll(/\s+/g, " ");
 }

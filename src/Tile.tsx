@@ -5,6 +5,7 @@ import classes from "./classes.ts";
 type TileProps = {
 	onMark: (event: React.SyntheticEvent) => void;
 	onCheck: () => void;
+	isGameOver: boolean;
 	isMine: boolean;
 	isChecked: boolean;
 	isMarked: boolean;
@@ -14,6 +15,7 @@ type TileProps = {
 export const Tile: React.FC<TileProps> = ({
 	onCheck,
 	onMark,
+	isGameOver,
 	isMine,
 	isChecked,
 	isMarked,
@@ -34,11 +36,14 @@ export const Tile: React.FC<TileProps> = ({
 		}
 
 		if (!isChecked) {
-			return "text-black";
+			return classes`
+				text-gray-800 border-gray-300
+				${!isGameOver && "hover:border-gray-950 hover:background-gray-50"}
+			`;
 		}
 
 		if (isMine) {
-			return "bg-red-200 border-red-700 text-red-700";
+			return "bg-pink-200 border-pink-700 text-pink-700";
 		}
 
 		switch (surroundingMines) {
@@ -52,25 +57,27 @@ export const Tile: React.FC<TileProps> = ({
 				return "border-lime-600 text-lime-600";
 			case 4:
 				return "border-yellow-600 text-yellow-600";
-			case 5:
 			default:
 				return "border-amber-600 text-amber-600";
 		}
-	}, [isMarked, isChecked, isMine, surroundingMines]);
+	}, [isGameOver, isMarked, isChecked, isMine, surroundingMines]);
 
 	return (
 		<button
 			type="button"
 			onClick={onClick}
 			onContextMenu={onMark}
-			className={classes`text-sm shadow-xs ${(!isMine || !isChecked) && "bg-button"} border rounded-md transition-colors select-none ${!isChecked && "border-gray-300 hover:border-gray-950 hover:background-gray-50"} flex items-center justify-center w-8 h-8 p-0 ${isChecked && "checked"} ${isMine && "mine"} ${color}`}
+			className={classes`
+				flex items-center justify-center
+				text-sm ${color}
+				w-8 h-8 p-0 border rounded-md
+				shadow-xs ${(!isMine || !isChecked) && "bg-button"}
+				select-none transition-colors
+			`}
 		>
-			{isChecked &&
-				(isMine ? (
-					<Bomb size={16} />
-				) : (
-					surroundingMines !== 0 && surroundingMines
-				))}
+			{isMine
+				? (isChecked || isGameOver) && <Bomb size={16} />
+				: isChecked && surroundingMines !== 0 && surroundingMines}
 			{isMarked && <FlagTriangleRight size={16} />}
 		</button>
 	);

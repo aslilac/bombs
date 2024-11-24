@@ -21,13 +21,17 @@ const App: React.FC = () => {
 		minefield.getSnapshot,
 	);
 
+	const hasWon = remainingTiles === 0;
+	const hasLost = detonated;
+
 	const [time, restartTimer] = useTimer({
 		paused: showOptions,
-		stopped: remainingTiles === 0 || detonated,
+		stopped: hasWon || hasLost,
 	});
 
 	const onNewGame = () => {
 		minefield.initialize(options);
+		setDismissEndcard(false);
 		restartTimer();
 	};
 
@@ -89,6 +93,7 @@ const App: React.FC = () => {
 								onCheck={() => {
 									onCheckTile(tile.position);
 								}}
+								isGameOver={hasWon || hasLost}
 								isMine={tile.isMine}
 								isChecked={tile.isChecked}
 								isMarked={tile.isMarked}
@@ -98,6 +103,18 @@ const App: React.FC = () => {
 					</div>
 				))}
 			</div>
+
+			{hasWon && !dismissEndcard && (
+				<div className="w-72 py-2 text-center text-lg border rounded-lg border-emerald-500 bg-emerald-50 text-emerald-900">
+					You won!
+				</div>
+			)}
+
+			{hasLost && !dismissEndcard && (
+				<div className="w-72 py-2 text-center text-lg border rounded-lg border-pink-500 bg-pink-50 text-pink-900">
+					You suck!
+				</div>
+			)}
 
 			{showOptions && (
 				<Options
