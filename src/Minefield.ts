@@ -156,6 +156,7 @@ export class Minefield {
 				// it and then return.
 				if (tile.isMarked && !tile.isMine) {
 					tile.isMarked = false;
+					this.#flagsPlaced--;
 					this.#notify();
 					return;
 				}
