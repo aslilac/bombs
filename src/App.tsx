@@ -1,5 +1,6 @@
 import { useRef, useState, useSyncExternalStore } from "react";
 import { Button } from "./Button.tsx";
+import classes from "./classes.ts";
 import Difficulties from "./Difficulties.ts";
 import { Minefield, type Point } from "./Minefield.ts";
 import { Options } from "./Options.tsx";
@@ -16,15 +17,14 @@ const App: React.FC = () => {
 		minefieldRef.current = new Minefield(options);
 	}
 	const minefield = minefieldRef.current;
-	const { grid, remainingTiles, remainingFlagsToPlace, detonated } =
+	const { grid, remainingTiles, remainingFlagsToPlace, detonated, undos } =
 		useSyncExternalStore(minefield.subscribe, minefield.getSnapshot);
 
 	const hasWon = remainingTiles <= 0;
 	const hasLost = detonated;
 
 	const [time, restartTimer] = useTimer({
-		paused: showOptions,
-		stopped: hasWon || hasLost,
+		paused: showOptions || hasWon || hasLost,
 	});
 
 	const onNewGame = () => {
@@ -43,6 +43,10 @@ const App: React.FC = () => {
 
 	const onCheckTile = (at: Point) => {
 		minefield.checkTile(at);
+	};
+
+	const onUndo = () => {
+		minefield.undo();
 	};
 
 	const preventDefault = (event: React.SyntheticEvent) => {
@@ -86,6 +90,14 @@ const App: React.FC = () => {
 							</div>
 							<data>{remainingFlagsToPlace}</data>
 						</div>
+						{undos > 0 && (
+							<div className="flex flex-col-reverse items-center">
+								<div className="uppercase tracking-wide text-xs text-gray-500">
+									Undos
+								</div>
+								<data>{undos}</data>
+							</div>
+						)}
 					</div>
 
 					<div
@@ -111,14 +123,26 @@ const App: React.FC = () => {
 					</div>
 
 					{hasWon && !dismissEndcard && (
-						<div className="w-72 py-2 text-center text-lg border rounded-lg border-emerald-500 bg-emerald-50 text-emerald-900">
-							You won! c:
+						<div className="flex items-center justify-between gap-2 min-w-72 p-2 text-lg border rounded-lg border-emerald-500 bg-emerald-50 text-emerald-900">
+							<span className="px-2">You won! c:</span>
+							<Button
+								onClick={onNewGame}
+								className={classes`border-emerald-300`}
+							>
+								New game
+							</Button>
 						</div>
 					)}
 
 					{hasLost && !dismissEndcard && (
-						<div className="w-72 py-2 text-center text-lg border rounded-lg border-pink-500 bg-pink-50 text-pink-900">
-							You blew up a mine :c
+						<div className="flex items-center justify-between gap-2 min-w-72 p-2 text-lg border rounded-lg border-pink-500 bg-pink-50 text-pink-900">
+							<span className="px-2">You blew up a mine :c</span>
+							<Button onClick={onNewGame} className="border-pink-200">
+								New game
+							</Button>
+							<Button onClick={onUndo} className="border-pink-200">
+								Undo
+							</Button>
 						</div>
 					)}
 				</div>

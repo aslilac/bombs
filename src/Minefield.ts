@@ -19,33 +19,31 @@ export type Point = {
 	readonly y: number;
 };
 
-type Snapshot = {
+export type MinefieldSnapshot = {
 	readonly grid: Array<Array<Tile>>;
-	readonly startTime: Date;
-	readonly completionTime?: Date;
 	readonly remainingTiles: number;
 	readonly remainingFlagsToPlace: number;
 	readonly detonated: boolean;
+	readonly undos: number;
 };
 
 export class Minefield {
 	#options!: MinefieldOptions;
 	#grid!: Array<Array<Tile>>;
-	#startTime!: Date;
-	#completionTime?: Date;
 	#remainingTiles!: number;
 	#flagsPlaced!: number;
-	#detonated!: boolean;
+	#detonated?: Point;
+	#undos!: number;
 
 	#subscribers = new Set<() => void>();
-	#snapshot?: Snapshot;
+	#snapshot?: MinefieldSnapshot;
 
 	get options() {
 		return this.#options;
 	}
 
 	get isGameOver() {
-		return this.#remainingTiles <= 0 || this.#detonated;
+		return this.#remainingTiles <= 0 || Boolean(this.#detonated);
 	}
 
 	get hasWon() {
@@ -59,11 +57,10 @@ export class Minefield {
 	initialize(options: MinefieldOptions) {
 		this.#options = options;
 		this.#grid = [];
-		this.#startTime = new Date();
-		this.#completionTime = undefined;
 		this.#remainingTiles = options.width * options.height - options.mines;
 		this.#flagsPlaced = 0;
-		this.#detonated = false;
+		this.#detonated = undefined;
+		this.#undos = 0;
 
 		for (let x = 0; x < options.width; x++) {
 			const column: Array<Tile> = [];
@@ -255,7 +252,7 @@ export class Minefield {
 
 			// If it's a mine, we're done
 			if (tile.isMine) {
-				this.#detonated = true;
+				this.#detonated = at;
 				return;
 			}
 
@@ -271,13 +268,22 @@ export class Minefield {
 					}
 				}
 			}
-
-			if (this.#remainingTiles === 0) {
-				this.#completionTime = new Date();
-			}
 		} finally {
 			this.#notify();
 		}
+	}
+
+	undo() {
+		if (!this.#detonated) {
+			return;
+		}
+
+		const tile = this.#grid[this.#detonated.x][this.#detonated.y];
+		tile.isChecked = false;
+		this.#detonated = undefined;
+		this.#undos++;
+
+		this.#notify();
 	}
 
 	#notify() {
@@ -294,7 +300,7 @@ export class Minefield {
 		};
 	};
 
-	getSnapshot = (): Snapshot => {
+	getSnapshot = (): MinefieldSnapshot => {
 		if (!this.#snapshot) {
 			this.#snapshot = {
 				grid: this.#grid.map((column) => [
@@ -302,13 +308,12 @@ export class Minefield {
 						...tile,
 					})),
 				]),
-				startTime: new Date(this.#startTime),
-				completionTime: this.#completionTime && new Date(this.#completionTime),
 				remainingTiles: this.hasWon ? 0 : this.#remainingTiles,
 				remainingFlagsToPlace: this.hasWon
 					? 0
 					: this.options.mines - this.#flagsPlaced,
-				detonated: this.#detonated,
+				detonated: Boolean(this.#detonated),
+				undos: this.#undos,
 			};
 		}
 

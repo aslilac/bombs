@@ -1,3 +1,5 @@
+import { twMerge } from "tailwind-merge";
+
 export default function classes(
 	templateSegments: TemplateStringsArray,
 	...variables: Array<string | false | null | undefined | 0 | 0n>
@@ -16,5 +18,5 @@ export default function classes(
 		className += segments[i];
 	}
 
-	return className.replaceAll(/\s+/g, " ");
+	return twMerge(className.replaceAll(/\s+/g, " "));
 }

@@ -10,7 +10,8 @@
 	"dependencies": {
 		"lucide": "npm:lucide-react@^0.460.0",
 		"react": "^18.3.0",
-		"react-dom": "^18.3.0"
+		"react-dom": "^18.3.0",
+		"tailwind-merge": "^2.5.5"
 	},
 	"devDependencies": {
 		"@tailwindcss/postcss": "^4.0.0-beta.2",
