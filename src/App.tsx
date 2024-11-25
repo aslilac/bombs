@@ -45,6 +45,10 @@ const App: React.FC = () => {
 		minefield.checkTile(at);
 	};
 
+	const preventDefault = (event: React.SyntheticEvent) => {
+		event.preventDefault();
+	};
+
 	if (minefield.options !== options) {
 		onNewGame();
 	}
@@ -84,19 +88,17 @@ const App: React.FC = () => {
 						</div>
 					</div>
 
-					<div className="flex gap-2 max-w-full max-h-full overflow-x-auto scrollbar-hidden px-4 py-2">
+					<div
+						onContextMenu={preventDefault}
+						className="flex gap-2 max-w-full max-h-full overflow-x-auto scrollbar-hidden px-4 py-2"
+					>
 						{grid.map((column, x) => (
 							<div key={x} className="flex flex-col gap-2">
 								{column.map((tile, y) => (
 									<Tile
 										key={y}
-										onMark={(event) => {
-											event.preventDefault();
-											onMarkTile(tile.position);
-										}}
-										onCheck={() => {
-											onCheckTile(tile.position);
-										}}
+										onMark={() => onMarkTile(tile.position)}
+										onCheck={() => onCheckTile(tile.position)}
 										isGameOver={hasWon || hasLost}
 										isMine={tile.isMine}
 										isChecked={tile.isChecked}

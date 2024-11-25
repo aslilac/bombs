@@ -198,7 +198,7 @@ export class Minefield {
 
 	markTile(at: Point) {
 		const tile = this.#grid[at.x][at.y];
-		if (this.isGameOver || tile.isChecked) {
+		if (!tile || this.isGameOver || tile.isChecked) {
 			return;
 		}
 
