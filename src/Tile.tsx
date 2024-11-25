@@ -32,13 +32,13 @@ export const Tile: React.FC<TileProps> = ({
 
 	const color = useMemo(() => {
 		if (isMarked) {
-			return "border-gray-700 text-black";
+			return "border-stone-700 text-black";
 		}
 
 		if (!isChecked) {
 			return classes`
-				text-gray-800 border-gray-300
-				${!isGameOver && "hover:border-gray-950 hover:background-gray-50"}
+				text-stone-800 border-stone-300
+				${!isGameOver && "hover:border-stone-950 hover:background-stone-50"}
 			`;
 		}
 
@@ -48,7 +48,7 @@ export const Tile: React.FC<TileProps> = ({
 
 		switch (surroundingMines) {
 			case 0:
-				return "border-gray-700";
+				return "border-stone-700";
 			case 1:
 				return "border-blue-700 text-blue-700";
 			case 2:

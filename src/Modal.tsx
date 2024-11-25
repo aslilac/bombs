@@ -35,7 +35,7 @@ export const Modal: React.FC<ModalProps> = ({
 	return (
 		<Portal>
 			<div
-				className="absolute top-0 left-0 flex flex-col w-dvw h-dvh items-center justify-center bg-gray-900/40"
+				className="absolute top-0 left-0 flex flex-col w-dvw h-dvh items-center justify-center bg-stone-900/40"
 				onClick={onBlur}
 			>
 				<div

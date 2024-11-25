@@ -60,7 +60,7 @@ const App: React.FC = () => {
 	return (
 		<>
 			<div className="h-dvh w-dvw flex flex-col-reverse">
-				<div className="flex p-2 items-center justify-between border-t border-gray-300">
+				<div className="flex p-2 items-center justify-between border-t border-stone-300">
 					<div className="flex items-center justify-between gap-2">
 						<Button onClick={onNewGame}>New game</Button>
 						<Button disabled={hasWon || hasLost} onClick={onHint}>
@@ -73,26 +73,26 @@ const App: React.FC = () => {
 				<div className="flex flex-col flex-grow items-center justify-center overflow-y-auto gap-4 py-1">
 					<div className="flex items-center justify-between gap-4">
 						<div className="flex flex-col-reverse items-center">
-							<div className="uppercase tracking-wide text-xs text-gray-500">
+							<div className="uppercase tracking-wide text-xs text-stone-500">
 								Elapsed time
 							</div>
 							<time>{Math.floor(time / 1000)}</time>
 						</div>
 						<div className="flex flex-col-reverse items-center">
-							<div className="uppercase tracking-wide text-xs text-gray-500">
+							<div className="uppercase tracking-wide text-xs text-stone-500">
 								Remaining tiles
 							</div>
 							<data>{remainingTiles}</data>
 						</div>
 						<div className="flex flex-col-reverse items-center">
-							<div className="uppercase tracking-wide text-xs text-gray-500">
+							<div className="uppercase tracking-wide text-xs text-stone-500">
 								Flags to place
 							</div>
 							<data>{remainingFlagsToPlace}</data>
 						</div>
 						{undos > 0 && (
 							<div className="flex flex-col-reverse items-center">
-								<div className="uppercase tracking-wide text-xs text-gray-500">
+								<div className="uppercase tracking-wide text-xs text-stone-500">
 									Undos
 								</div>
 								<data>{undos}</data>

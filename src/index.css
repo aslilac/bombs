@@ -25,3 +25,7 @@
 		src: url("https://fonts.mckayla.cloud/Outfit.woff2") format(woff2);
 	}
 }
+
+:root {
+	background-color: var(--color-stone-100);
+}

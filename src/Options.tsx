@@ -94,7 +94,7 @@ export const Options: React.FC<OptionsProps> = ({
 					<Button
 						type="submit"
 						disabled={options === initialOptions}
-						className="enabled:bg-gray-900 enabled:text-white enabled:border-gray-900 hover:bg-gray-700"
+						className="enabled:bg-stone-900 enabled:text-white enabled:border-stone-900 hover:bg-stone-700"
 					>
 						Save & restart
 					</Button>
@@ -113,7 +113,7 @@ const OptionsField: React.FC<OptionsFieldProps> = ({ label, ...attrs }) => {
 		<div className="flex flex-col gap-1">
 			<label>{label}</label>
 			<input
-				className="inline-block border border-gray-300 p-2 rounded-sm w-full"
+				className="inline-block border border-stone-300 p-2 rounded-sm w-full"
 				{...attrs}
 			/>
 		</div>
