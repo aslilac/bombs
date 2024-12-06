@@ -9,7 +9,7 @@ export type ModalProps = {
 	onBlur?: () => void;
 };
 
-export const Modal: React.FC<ModalProps> = ({
+export const Modal: React.FunctionComponent<ModalProps> = ({
 	children,
 	className,
 	noDefaultStyles,

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "./Button.tsx";
 import Difficulties from "./Difficulties.ts";
-import { type MinefieldOptions } from "./Minefield.ts";
+import type { MinefieldOptions } from "./Minefield.ts";
 import { Modal } from "./Modal.tsx";
 
 export type OptionsProps = {
@@ -12,7 +12,7 @@ export type OptionsProps = {
 
 type Option = keyof MinefieldOptions;
 
-export const Options: React.FC<OptionsProps> = ({
+export const Options: React.FunctionComponent<OptionsProps> = ({
 	initialOptions,
 	onCancel,
 	updateOptions,
@@ -104,7 +104,7 @@ export const Options: React.FC<OptionsProps> = ({
 	);
 };
 
-type OptionsFieldProps = JSX.IntrinsicElements["input"] & {
+type OptionsFieldProps = React.ComponentProps<"input"> & {
 	label: string;
 };
 

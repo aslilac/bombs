@@ -12,7 +12,7 @@ type TileProps = {
 	surroundingMines: number;
 };
 
-export const Tile: React.FC<TileProps> = ({
+export const Tile: React.FunctionComponent<TileProps> = ({
 	onCheck,
 	onMark,
 	isGameOver,

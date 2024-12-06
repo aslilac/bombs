@@ -102,7 +102,7 @@ type UseTimerOptions = {
 
 export function useTimer(options: UseTimerOptions = {}) {
 	const { paused = false, stopped = false } = options;
-	const timerRef = useRef<Timer | undefined>();
+	const timerRef = useRef<Timer | undefined>(undefined);
 	if (!timerRef.current) {
 		timerRef.current = new Timer();
 		if (stopped) {

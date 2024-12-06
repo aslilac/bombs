@@ -2,10 +2,10 @@ import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 export type PortalProps = {
-	children?: React.ReactNode;
+	children?: React.Node;
 };
 
-export const Portal: React.FC<PortalProps> = ({ children }) => {
+export const Portal: React.FunctionComponent<PortalProps> = ({ children }) => {
 	const portal = useRef<HTMLDivElement>(document.createElement("div"));
 
 	useEffect(() => {

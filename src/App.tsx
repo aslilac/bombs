@@ -7,12 +7,12 @@ import { Options } from "./Options.tsx";
 import { Tile } from "./Tile.tsx";
 import { useTimer } from "./useTimer.ts";
 
-const App: React.FC = () => {
+const App: React.FunctionComponent = () => {
 	const [showOptions, setShowOptions] = useState(false);
 	const [dismissEndcard, setDismissEndcard] = useState(false);
 	const [options, setOptions] = useState(Difficulties.EASY);
 
-	const minefieldRef = useRef<Minefield | undefined>();
+	const minefieldRef = useRef<Minefield | undefined>(undefined);
 	if (!minefieldRef.current) {
 		minefieldRef.current = new Minefield(options);
 	}

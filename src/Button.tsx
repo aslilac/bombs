@@ -1,6 +1,8 @@
 import classes from "./classes";
 
-export const Button: React.FC<JSX.IntrinsicElements["button"]> = ({
+export type ButtonProps = React.ComponentProps<"button">;
+
+export const Button: React.FunctionComponent<ButtonProps> = ({
 	className,
 	children,
 	...attrs
